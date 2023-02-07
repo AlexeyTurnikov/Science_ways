@@ -5,7 +5,7 @@ import numpy as np
 gmsh.initialize()
 gmsh.model.add("1.1")
 
-lc = 0.1
+lc = 1
 points_tags_global = []
 points_coord_global = []
 
