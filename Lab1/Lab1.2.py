@@ -11,7 +11,7 @@ def createGeometryAndMesh():
     # the parent directory):
     gmsh.clear()
     path = os.path.dirname(os.path.abspath(__file__))
-    gmsh.merge(os.path.join(path, 'Amongas_key.STL'))
+    gmsh.merge(os.path.join(path, 'AMONGUS.STL'))
     # gmsh.merge(os.path.join(path, 't13_data.stl'))
     # We first classify ("color") the surfaces by splitting the original surface
     # along sharp geometrical features. This will create new discrete surfaces,
@@ -19,16 +19,16 @@ def createGeometryAndMesh():
 
     # Angle between two triangles above which an edge is considered as sharp,
     # retrieved from the ONELAB database (see below):
-    angle = 0.1
+    angle = 25
 
     # For complex geometries, patches can be too complex, too elongated or too
     # large to be parametrized; setting the following option will force the
     # creation of patches that are amenable to reparametrization:
-    forceParametrizablePatches = True
+    forceParametrizablePatches = False
 
     # For open surfaces include the boundary edges in the classification
     # process:
-    includeBoundary = False
+    includeBoundary = True
 
     # Force curves to be split on given angle:
     curveAngle = 180
