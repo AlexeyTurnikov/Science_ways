@@ -16,23 +16,17 @@ class CalcMesh:
         self.nodes = np.array([nodes_coords[0::3], nodes_coords[1::3], nodes_coords[2::3]])
 
         # Модельная скалярная величина распределена как-то вот так
-        self.smth = np.power(self.nodes[0, :], 2) + np.power(self.nodes[1, :], 2)
+        self.smth = np.power(self.nodes[0, :], 3) + np.power(self.nodes[1, :], 5)
 
         # Тут могла быть ваша реклама:
         self.velocity = np.zeros(shape=(3, int(len(nodes_coords) / 3)), dtype=np.double)
-        V_0 = 0.5
-        x = self.nodes[0]
+        v_0 = 0.5
         y = self.nodes[1]
         z = self.nodes[2]
         self.nodes[1] -= 113
         for i in range(len(self.velocity[0])):
-            # self.velocity[0][i] = V_0 * np.cos(np.arctan(self.nodes[1][i] / self.nodes[0][i]))
-            # self.velocity[1][i] = V_0 * np.sin(np.arctan(self.nodes[1][i] / self.nodes[0][i]))
-            self.velocity[0][i] = V_0 * -x[i]  # / (x[i] ** 2 + y[i] ** 2) ** 0.5
-            self.velocity[1][i] = V_0 * -y[i]  # / (x[i] ** 2 + y[i] ** 2) ** 0.5
-            self.velocity[2][i] = V_0 * -z[i]
-            # self.velocity[0][i] = V_0 * (x[i] ** 3) / abs(x[i])
-            # self.velocity[1][i] = V_0 * (y[i] ** 3) / abs(x[i])
+            self.velocity[1][i] = v_0 * -y[i]
+            self.velocity[2][i] = v_0 * -z[i]
 
         # Пройдём по элементам в модели gmsh
         self.tetrs = np.array([tetrs_points[0::4], tetrs_points[1::4], tetrs_points[2::4], tetrs_points[3::4]])
@@ -44,7 +38,6 @@ class CalcMesh:
         for i in range(len(self.nodes[1])):
             self.nodes[2][i] += self.velocity[2][i] * np.sin(tau)
             self.nodes[1][i] += self.velocity[1][i] * np.sin(tau)
-            # self.nodes[0][i] += self.velocity[0][i] * tau
 
         # Метод отвечает за запись текущего состояния сетки в снапшот в формате VTK
 
@@ -157,14 +150,14 @@ for i in range(0, len(nodeTags)):
 assert (len(tetrsNodesTags) % 4 == 0)
 
 mesh = CalcMesh(nodesCoord, tetrsNodesTags)
-tau = 0
+t = 0
 mesh.snapshot(0)
 
-for i in range(1, 40):
-    mesh.move(tau)
+for i in range(1, 10):
+    mesh.move(t)
     mesh.snapshot(i)
-    tau += np.pi / 5
-    print(np.sin(tau))
+    t += np.pi / 5
+    print(np.sin(t))
 if "-nopopup" not in sys.argv:
     gmsh.fltk.initialize()
     while gmsh.fltk.isAvailable():
